@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA Part 107 Master Certification & Commercial Flight Operations</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 900: '#0b1329', 800: '#0f172a', 700: '#1e293b', 600: '#334155' },
+                        flight: { 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
+                        emerald: { 500: '#10b981', 600: '#059669' },
+                        amber: { 500: '#f59e0b', 600: '#d97706' },
+                        purple: { 500: '#8b5cf6', 600: '#7c3aed' },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b1329;
+            color: #f1f5f9;
+        }
+
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card-hover {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-2px);
+            border-color: rgba(37, 99, 235, 0.4);
+            box-shadow: 0 12px 40px 0 rgba(37, 99, 235, 0.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
+        }
+
+        /* Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #1e293b;
+            border-radius: 4px;
+            border: 1px solid #334155;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+        }
+
+        /* Pulse Animations */
+        @keyframes beatPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 8px #2563eb); }
+        }
+        .beat-active {
+            animation: beatPulse 0.2s ease-in-out;
+            background-color: #2563eb !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-flight-600 selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-50 glass-card border-b border-slate-800 px-4 lg:px-8 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="p-2 bg-flight-600/20 border border-flight-500/30 rounded-lg text-flight-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight tracking-wide text-white flex items-center gap-2">
+                    AVIA-107 <span class="text-xs px-2 py-0.5 rounded bg-flight-600/30 border border-flight-500/40 text-flight-400 font-semibold">MASTER PRO</span>
+                </h1>
+                <p class="text-xs text-slate-400">FAA Part 107 & Advanced Commercial Operations Suite</p>
+            </div>
+        </div>
+
+        <!-- Global Course Completion Bar -->
+        <div class="hidden md:flex items-center space-x-4 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800">
+            <div class="text-right">
+                <div class="text-xs text-slate-400">Total Course Mastery</div>
+                <div id="global-progress-text" class="text-sm font-bold text-flight-400">0% Completed</div>
+            </div>
+            <div class="w-32 bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-700">
+                <div id="global-progress-bar" class="bg-gradient-to-r from-flight-600 via-purple-500 to-emerald-500 h-full rounded-full w-0 transition-all duration-500"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+        
+        <!-- Sidebar Navigation Menu -->
+        <aside class="w-full md:w-64 bg-slate-900/90 border-r border-slate-800/80 p-3 flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto shrink-0 gap-1.5">
+            
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn active flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition whitespace-nowrap">
+                <svg class="w-5 h-5 text-flight-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 00-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 00-1 1m-6 0h6"/></svg>
+                <span>Dashboard & Score</span>
+            </button>
+
+            <button onclick="switchTab('music-studio')" id="nav-music-studio" class="nav-btn flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition whitespace-nowrap">
+                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12 0c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+                <span>Musical Memory Studio</span>
+            </button>
+
+            <button onclick="switchTab('core-course')" id="nav-core-course" class="nav-btn flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition whitespace-nowrap">
+                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                <span>Part 107 Core Modules</span>
+            </button>
+
+            <div class="hidden md:block pt-3 pb-1 px-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase">Advanced Sectors</div>
+
+            <button onclick="switchTab('sector-ag')" id="nav-sector-ag" class="nav-btn flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition whitespace-nowrap">
+                <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a2.5 2.5 0 002.5-2.5V11a2 2 0 00-2-2h-1c-1.104 0-2-.896-2-2V5c0-1.104-.896-2-2-2H9.055"/></svg>
+                <span>Ag & Spraying (Pt 137)</span>
+            </button>
+
+            <button onclick="switchTab('sector-night')" id="nav-sector-night" class="nav-btn flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition whitespace-nowrap">
+                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                <span>Night Ops (§ 107.29)</span>
+            </button>
+
+            <button onclick="switchTab('sector-mapping')" id="nav-sector-mapping" class="nav-btn flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition whitespace-nowrap">
+                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                <span>3D Mapping & GSD</span>
+            </button>
+
+            <button onclick="switchTab('sector-thermal')" id="nav-sector-thermal" class="nav-btn flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition whitespace-nowrap">
+                <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
+                <span>Thermal Imaging</span>
+            </button>
+
+            <div class="hidden md:block pt-3 pb-1 px-3 text-[10px] font-bold tracking-wider text-slate-500 uppercase">Testing</div>
+
+            <button onclick="switchTab('exam-sim')" id="nav-exam-sim" class="nav-btn flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition whitespace-nowrap">
+                <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                <span>FAA Practice Exam</span>
+            </button>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-8 bg-slate-950/60">
+
+            <!-- ================= TAB 1: DASHBOARD ================= -->
+            <section id="tab-dashboard" class="tab-content block space-y-6">
+                
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white tracking-tight">Readiness Dashboard & Exam Predictor</h2>
+                        <p class="text-slate-400 text-sm">Assess your FAA Part 107 domain readiness and calculate your projected exam score.</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                            FAA Target: 70%+ (42/60)
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Exam Score Predictor Box -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    
+                    <!-- Sliders Side -->
+                    <div class="lg:col-span-7 glass-card rounded-2xl p-6 space-y-5">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <svg class="w-5 h-5 text-flight-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                            Self-Assessed Domain Mastery
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-sm font-medium mb-1">
+                                    <span class="text-slate-300">Regulations & Compliance (15-25%)</span>
+                                    <span id="slider-reg-val" class="text-flight-400 font-bold">75%</span>
+                                </div>
+                                <input type="range" id="slider-reg" min="0" max="100" value="75" oninput="updateExamPredictor()">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-sm font-medium mb-1">
+                                    <span class="text-slate-300">Airspace & Sectionals (15-25%)</span>
+                                    <span id="slider-air-val" class="text-flight-400 font-bold">70%</span>
+                                </div>
+                                <input type="range" id="slider-air" min="0" max="100" value="70" oninput="updateExamPredictor()">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-sm font-medium mb-1">
+                                    <span class="text-slate-300">Weather Data & METARs (11-16%)</span>
+                                    <span id="slider-wx-val" class="text-flight-400 font-bold">65%</span>
+                                </div>
+                                <input type="range" id="slider-wx" min="0" max="100" value="65" oninput="updateExamPredictor()">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-sm font-medium mb-1">
+                                    <span class="text-slate-300">Aircraft Loading & Performance (7-11%)</span>
+                                    <span id="slider-perf-val" class="text-flight-400 font-bold">80%</span>
+                                </div>
+                                <input type="range" id="slider-perf" min="0" max="100" value="80" oninput="updateExamPredictor()">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-sm font-medium mb-1">
+                                    <span class="text-slate-300">Operations, CRM & Emergency (35-45%)</span>
+                                    <span id="slider-ops-val" class="text-flight-400 font-bold">75%</span>
+                                </div>
+                                <input type="range" id="slider-ops" min="0" max="100" value="75" oninput="updateExamPredictor()">
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex justify-between">
+                            <button onclick="setPredictorPreset('ready')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Preset: Exam Ready</button>
+                            <button onclick="setPredictorPreset('airspace')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Preset: Weak Airspace</button>
+                            <button onclick="setPredictorPreset('reset')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Reset All</button>
+                        </div>
+                    </div>
+
+                    <!-- Gauge Display Side -->
+                    <div class="lg:col-span-5 glass-card rounded-2xl p-6 flex flex-col justify-between items-center text-center">
+                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Projected Exam Outcome</h3>
+                        
+                        <!-- Circular Visual Gauge -->
+                        <div class="relative w-48 h-48 my-4 flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" stroke="#1e293b" stroke-width="8" fill="transparent"/>
+                                <circle id="gauge-circle" cx="50" cy="50" r="40" stroke="#2563eb" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="62.8" stroke-linecap="round" fill="transparent" class="transition-all duration-500"/>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span id="gauge-score-text" class="text-4xl font-extrabold text-white">73%</span>
+                                <span id="gauge-questions-text" class="text-xs text-slate-400 mt-1">44 / 60 Correct</span>
+                            </div>
+                        </div>
+
+                        <div id="gauge-status-badge" class="px-4 py-2 rounded-xl text-sm font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                            PASSED - READY FOR FAA EXAM
+                        </div>
+
+                        <p class="text-xs text-slate-500 mt-3">Calculated using weighted official FAA Knowledge Testing matrix.</p>
+                    </div>
+
+                </div>
+
+                <!-- Sector Mastery Status Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="glass-card glass-card-hover p-4 rounded-xl border-l-4 border-amber-500">
+                        <div class="text-xs font-semibold text-slate-400 uppercase">Ag & Spraying (Pt 137)</div>
+                        <div class="text-lg font-bold text-white mt-1">Dispensing Poisons</div>
+                        <p class="text-xs text-slate-400 mt-2">Part 107 scouting vs Part 137 exemption rules.</p>
+                    </div>
+
+                    <div class="glass-card glass-card-hover p-4 rounded-xl border-l-4 border-indigo-500">
+                        <div class="text-xs font-semibold text-slate-400 uppercase">Night Ops (§ 107.29)</div>
+                        <div class="text-lg font-bold text-white mt-1">Anti-Collision Strobes</div>
+                        <p class="text-xs text-slate-400 mt-2">3 Statute Miles visibility, night physiology.</p>
+                    </div>
+
+                    <div class="glass-card glass-card-hover p-4 rounded-xl border-l-4 border-cyan-500">
+                        <div class="text-xs font-semibold text-slate-400 uppercase">3D Photogrammetry</div>
+                        <div class="text-lg font-bold text-white mt-1">Overlap & GSD</div>
+                        <p class="text-xs text-slate-400 mt-2">75/70% overlap geometry, RTK/PPK GCP positioning.</p>
+                    </div>
+
+                    <div class="glass-card glass-card-hover p-4 rounded-xl border-l-4 border-rose-500">
+                        <div class="text-xs font-semibold text-slate-400 uppercase">Thermal Inspection</div>
+                        <div class="text-lg font-bold text-white mt-1">LWIR Radiometrics</div>
+                        <p class="text-xs text-slate-400 mt-2">Emissivity factor calibration & Delta-T contrast.</p>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ================= TAB 2: MUSICAL MEMORY STUDIO ================= -->
+            <section id="tab-music-studio" class="tab-content hidden space-y-6">
+                
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                        <svg class="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12 0c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+                        Musical Memory Studio & Web Synth
+                    </h2>
+                    <p class="text-slate-400 text-sm">Lock key regulatory numbers into memory using rhythmic sound anchors generated directly in your browser.</p>
+                </div>
+
+                <!-- Web Audio Synth Controls -->
+                <div class="glass-card p-6 rounded-2xl border border-purple-500/20 bg-gradient-to-br from-slate-900 via-slate-900 to-purple-950/30">
+                    <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+                        
+                        <!-- Left Controls -->
+                        <div class="flex items-center space-x-4">
+                            <button id="synth-play-btn" onclick="toggleSynthBeat()" class="w-14 h-14 rounded-full bg-flight-600 hover:bg-flight-500 text-white flex items-center justify-center shadow-lg shadow-flight-600/40 transition transform active:scale-95">
+                                <svg id="synth-play-icon" class="w-7 h-7 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg id="synth-pause-icon" class="w-7 h-7 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+                            <div>
+                                <div class="text-white font-bold text-base">Backbeat Synthesizer</div>
+                                <div id="synth-pattern-name" class="text-xs text-purple-400 font-semibold">Track 1 Pattern: Disco Bounce (120 BPM)</div>
+                            </div>
+                        </div>
+
+                        <!-- Tempo Control -->
+                        <div class="flex items-center space-x-4 w-full lg:w-auto">
+                            <span class="text-xs font-semibold text-slate-400">TEMPO</span>
+                            <input type="range" id="synth-bpm" min="60" max="150" value="120" oninput="updateBPM(this.value)" class="w-32">
+                            <span id="bpm-display" class="code-font text-sm font-bold text-flight-400 w-12 text-right">120 BPM</span>
+                        </div>
+
+                        <!-- Visualizer Step Matrix -->
+                        <div class="flex items-center space-x-2">
+                            <div id="step-0" class="w-3 h-8 bg-slate-800 rounded-full transition"></div>
+                            <div id="step-1" class="w-3 h-8 bg-slate-800 rounded-full transition"></div>
+                            <div id="step-2" class="w-3 h-8 bg-slate-800 rounded-full transition"></div>
+                            <div id="step-3" class="w-3 h-8 bg-slate-800 rounded-full transition"></div>
+                            <div id="step-4" class="w-3 h-8 bg-slate-800 rounded-full transition"></div>
+                            <div id="step-5" class="w-3 h-8 bg-slate-800 rounded-full transition"></div>
+                            <div id="step-6" class="w-3 h-8 bg-slate-800 rounded-full transition"></div>
+                            <div id="step-7" class="w-3 h-8 bg-slate-800 rounded-full transition"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Song Lyrics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Track 1 -->
+                    <div class="glass-card glass-card-hover p-6 rounded-2xl border-t-4 border-flight-500 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-flight-500/20 text-flight-400 border border-flight-500/30">TRACK 1</span>
+                                <button onclick="selectSongTrack('track1')" class="text-xs text-slate-400 hover:text-white underline">Load Rhythm</button>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-1">"The Rules of the Sky"</h3>
+                            <p class="text-xs text-slate-400 mb-4">To the tune of: <i>YMCA (120 BPM)</i></p>
+
+                            <div class="space-y-3 text-sm text-slate-300 bg-slate-900/60 p-4 rounded-xl border border-slate-800/80">
+                                <p>🎵 Small drone pilot, keep your eyes on the air!</p>
+                                <p>Keep it under <b>55 pounds</b> right there!</p>
+                                <p>Max speed is <b>100 miles per hour</b>!</p>
+                                <p><b>400 feet AGL</b> is your ceiling power!</p>
+                                <hr class="border-slate-800">
+                                <p class="text-flight-400 font-medium">It's time to fly <b>V-L-O-S</b>!</p>
+                                <p>Need <b>3 miles visibility</b> where you stand!</p>
+                                <p>Stay <b>500 feet below</b> and <b>2,000 feet side-to-side</b> from clouds across the land!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Track 2 -->
+                    <div class="glass-card glass-card-hover p-6 rounded-2xl border-t-4 border-purple-500 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30">TRACK 2</span>
+                                <button onclick="selectSongTrack('track2')" class="text-xs text-slate-400 hover:text-white underline">Load Rhythm</button>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-1">"Airspace Rap"</h3>
+                            <p class="text-xs text-slate-400 mb-4">To the tune of: <i>Boom-Bap Hip Hop (90 BPM)</i></p>
+
+                            <div class="space-y-3 text-sm text-slate-300 bg-slate-900/60 p-4 rounded-xl border border-slate-800/80">
+                                <p>🎤 <b>Class A</b> at 18,000—drones don't touch that high!</p>
+                                <p><b>Class B</b> for BIG jets, wedding cake upside down!</p>
+                                <p><b>Class C</b> mid-size shelf, LAANC authorization required!</p>
+                                <p><b>Class D</b> small cylinder field, talk to the tower!</p>
+                                <p><b>Class G</b> uncontrolled surface—fly free and clear!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Track 3 -->
+                    <div class="glass-card glass-card-hover p-6 rounded-2xl border-t-4 border-amber-500 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">TRACK 3</span>
+                                <button onclick="selectSongTrack('track3')" class="text-xs text-slate-400 hover:text-white underline">Load Rhythm</button>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-1">"METAR Breakdown"</h3>
+                            <p class="text-xs text-slate-400 mb-4">To the tune of: <i>Stomp-Stomp-Clap (85 BPM)</i></p>
+
+                            <div class="space-y-3 text-sm text-slate-300 bg-slate-900/60 p-4 rounded-xl border border-slate-800/80">
+                                <p class="code-font text-xs text-amber-300">KATL 121753Z 30015G25KT 10SM CLR 32/18 A3012</p>
+                                <p>🥁 <i>Stomp-Stomp-Clap!</i></p>
+                                <p><b>KATL</b> station, <b>12th day, 17:53 Zulu</b>!</p>
+                                <p>Wind <b>300 degrees</b>, <b>15 knots</b>, <b>gusts to 25</b>!</p>
+                                <p><b>10 Statute Miles</b> keeps you alive!</p>
+                                <p>Temp <b>32°C</b> / Dew <b>18°C</b> / Altimeter <b>30.12</b>!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ================= TAB 3: CORE PART 107 MODULES ================= -->
+            <section id="tab-core-course" class="tab-content hidden space-y-6">
+                
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold text-white tracking-tight">Core Part 107 Knowledge Base</h2>
+                    <p class="text-slate-400 text-sm">Essential ground school modules with instant rule breakdowns.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Module 1 -->
+                    <div class="glass-card p-6 rounded-2xl space-y-4">
+                        <div class="flex items-center space-x-3 text-flight-400">
+                            <span class="w-8 h-8 rounded-lg bg-flight-500/20 flex items-center justify-center font-bold">1</span>
+                            <h3 class="text-lg font-bold text-white">Regulations & Night (§ 107.29)</h3>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-300 list-disc list-inside">
+                            <li><b>Alcohol Limit:</b> 8 hours bottle-to-throttle, maximum 0.04% BAC.</li>
+                            <li><b>Accident Reporting:</b> Must report to FAA within <b>10 days</b> if serious injury occurs (loss of consciousness/hospitalization) OR property damage exceeds <b>$500</b>.</li>
+                            <li><b>Structure Height Exemption:</b> May fly up to <b>400 ft above</b> a structure if remaining within a <b>400 ft radius</b> of that structure.</li>
+                            <li><b>Right of Way:</b> Drones must yield right-of-way to ALL manned aircraft at all times.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Module 2 -->
+                    <div class="glass-card p-6 rounded-2xl space-y-4">
+                        <div class="flex items-center space-x-3 text-emerald-400">
+                            <span class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center font-bold">2</span>
+                            <h3 class="text-lg font-bold text-white">Airspace & Chart Reading</h3>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-300 list-disc list-inside">
+                            <li><b>Class B:</b> Solid Blue lines. Requires LAANC/ATC authorization. Big airport cake.</li>
+                            <li><b>Class C:</b> Solid Magenta lines. 2-tier shelf system. Requires LAANC/ATC authorization.</li>
+                            <li><b>Class D:</b> Dashed Blue cylinder surrounding small towered fields. Requires LAANC/ATC authorization.</li>
+                            <li><b>Class G:</b> Uncontrolled airspace. Surface to 700 or 1,200 ft AGL. No clearance needed.</li>
+                            <li><b>CTAF (Common Traffic Advisory Frequency):</b> Used at non-towered airports to broadcast position (usually 122.8 MHz).</li>
+                        </ul>
+                    </div>
+
+                    <!-- Module 3 -->
+                    <div class="glass-card p-6 rounded-2xl space-y-4">
+                        <div class="flex items-center space-x-3 text-amber-400">
+                            <span class="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center font-bold">3</span>
+                            <h3 class="text-lg font-bold text-white">Weather Data & METARs</h3>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-300 list-disc list-inside">
+                            <li><b>Density Altitude:</b> Pressure altitude corrected for non-standard temperature. High temperature + high humidity = High Density Altitude = REDUCED drone lift performance.</li>
+                            <li><b>Stable Air:</b> Stratiform clouds, smooth air, fair-to-poor visibility, continuous precipitation.</li>
+                            <li><b>Unstable Air:</b> Cumuliform clouds, turbulent air, good visibility, showery precipitation.</li>
+                            <li><b>Dew Point Spread:</b> Small temperature/dew point spread (< 3°C) indicates high likelihood of fog or low clouds.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Module 4 -->
+                    <div class="glass-card p-6 rounded-2xl space-y-4">
+                        <div class="flex items-center space-x-3 text-purple-400">
+                            <span class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center font-bold">4</span>
+                            <h3 class="text-lg font-bold text-white">Loading & Crew Resource Management</h3>
+                        </div>
+                        <ul class="space-y-2 text-sm text-slate-300 list-disc list-inside">
+                            <li><b>Load Factor in Turns:</b> A 60° banked turn doubles the load factor ($2.0 \text{ G}$). Stalling speed increases dramatically.</li>
+                            <li><b>CG Shift:</b> Forward CG increases stability but reduces performance. Aft CG makes aircraft unstable and difficult to control.</li>
+                            <li><b>5 Hazardous Attitudes & Antidotes:</b>
+                                <br>&bull; Anti-authority ("Don't tell me") &rarr; <i>Follow the rules.</i>
+                                <br>&bull; Impulsivity ("Do it quickly") &rarr; <i>Not so fast. Think first.</i>
+                                <br>&bull; Invulnerability ("It won't happen to me") &rarr; <i>It could happen to me.</i>
+                                <br>&bull; Macho ("I can do it") &rarr; <i>Taking chances is foolish.</i>
+                                <br>&bull; Resignation ("What's the use?") &rarr; <i>I am not helpless.</i>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ================= TAB 4: SECTOR - AG & SPRAYING ================= -->
+            <section id="tab-sector-ag" class="tab-content hidden space-y-6">
+                
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                        <svg class="w-7 h-7 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a2.5 2.5 0 002.5-2.5V11a2 2 0 00-2-2h-1c-1.104 0-2-.896-2-2V5c0-1.104-.896-2-2-2H9.055"/></svg>
+                        Advanced Sector Track: Agriculture & Part 137 Spraying
+                    </h2>
+                    <p class="text-slate-400 text-sm">Regulatory workflows and mission planning for spraying, crop analytics, and heavy payloads (>55 lbs).</p>
+                </div>
+
+                <!-- Part 107 vs Part 137 Breakdown -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card p-6 rounded-2xl border-t-4 border-emerald-500">
+                        <h3 class="text-lg font-bold text-white mb-2">Part 107 (Crop Scouting & Monitoring)</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                            You can fly multispectral sensors, standard cameras, and RGB sensors to map health (NDVI) under basic Part 107 rules. No special agricultural certificate is required if you are <b>not dispensing any material</b>.
+                        </p>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400">Basic 107 Remote Pilot License Sufficient</span>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl border-t-4 border-amber-500">
+                        <h3 class="text-lg font-bold text-white mb-2">Part 137 (Dispensing Economic Poisons)</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                            Applying pesticides, fertilizers, seeds, or chemical liquids requires an <b>FAA Part 137 Agricultural Aircraft Operator Certificate</b>. If your drone weighs over 55 lbs (e.g., DJI Agras T40/T50 loaded), you also need an <b>FAA § 44807 Exemption</b> and a <b>Class 3 Medical Certificate</b>.
+                        </p>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-400">Part 137 Cert + § 44807 Heavy Drone Exemption Required</span>
+                    </div>
+                </div>
+
+                <!-- Ag Payload & Spray Calculator -->
+                <div class="glass-card p-6 rounded-2xl space-y-6">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        Ag Spraying & Field Efficiency Calculator
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Target Field Size (Acres)</label>
+                            <input type="number" id="ag-field-acres" value="40" oninput="calculateAgMission()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-amber-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Target Application Rate (Gal / Acre)</label>
+                            <input type="number" id="ag-rate-gpa" value="2.0" step="0.5" oninput="calculateAgMission()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-amber-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Drone Tank Payload Capacity (Gal)</label>
+                            <input type="number" id="ag-tank-cap" value="10.5" step="0.5" oninput="calculateAgMission()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-amber-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Flight Speed (mph)</label>
+                            <input type="number" id="ag-speed-mph" value="15" oninput="calculateAgMission()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-amber-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Effective Swath Width (ft)</label>
+                            <input type="number" id="ag-swath-ft" value="25" oninput="calculateAgMission()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-amber-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Output Results -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400">Total Spraying Solution</div>
+                            <div id="ag-out-total-gal" class="text-2xl font-bold text-amber-400 mt-1">80 Gallons</div>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400">Required Flight Sorties</div>
+                            <div id="ag-out-flights" class="text-2xl font-bold text-amber-400 mt-1">8 Tank Loads</div>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400">Spray Coverage Rate</div>
+                            <div id="ag-out-coverage-rate" class="text-2xl font-bold text-emerald-400 mt-1">45.5 Acres/hr</div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ================= TAB 5: SECTOR - NIGHT OPS ================= -->
+            <section id="tab-sector-night" class="tab-content hidden space-y-6">
+                
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                        <svg class="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        Advanced Sector Track: Night Operations (§ 107.29)
+                    </h2>
+                    <p class="text-slate-400 text-sm">Requirements for night flying without waivers, night physiology, and anti-collision lighting specs.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Physiology -->
+                    <div class="glass-card p-6 rounded-2xl space-y-4">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            Night Physiology & Optical Illusions
+                        </h3>
+                        <ul class="space-y-3 text-sm text-slate-300">
+                            <li class="bg-slate-900/50 p-3 rounded-lg border border-slate-800">
+                                <b class="text-white">Rods vs Cones:</b> Cones detect color and detail in bright light (fovea center). Rods detect movement and operate at night (off-center scanning).
+                            </li>
+                            <li class="bg-slate-900/50 p-3 rounded-lg border border-slate-800">
+                                <b class="text-white">Dark Adaptation:</b> Takes <b>30 minutes</b> for eyes to fully adjust to darkness. Use low-intensity red flashlights to preserve night vision.
+                            </li>
+                            <li class="bg-slate-900/50 p-3 rounded-lg border border-slate-800">
+                                <b class="text-white">Autokinesis:</b> Staring at a stationary single point of light in the dark causes it to appear to move rapidly, causing control loss.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Anti-Collision Specifier -->
+                    <div class="glass-card p-6 rounded-2xl space-y-4">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                            § 107.29 Anti-Collision Lighting Hardware Checklist
+                        </h3>
+                        
+                        <div class="p-4 bg-indigo-950/30 border border-indigo-500/30 rounded-xl space-y-3">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-300">Visibility Distance:</span>
+                                <span class="font-bold text-indigo-300">Minimum 3 Statute Miles (SM)</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-300">Flash Rate Requirement:</span>
+                                <span class="font-bold text-indigo-300">40 to 100 Flashes Per Minute</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-300">Mounting Position:</span>
+                                <span class="font-bold text-indigo-300">Top & Bottom for 360° Sphere Coverage</span>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-400">
+                            <b>Note on LAANC at Night:</b> You can request night LAANC authorization in controlled airspace (Class B, C, D, E surface) up to the published grid altitude ceiling.
+                        </p>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ================= TAB 6: SECTOR - 3D MAPPING ================= -->
+            <section id="tab-sector-mapping" class="tab-content hidden space-y-6">
+                
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                        <svg class="w-7 h-7 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                        Advanced Sector Track: 3D Photogrammetry & GSD Calculator
+                    </h2>
+                    <p class="text-slate-400 text-sm">Calculations for spatial resolution, overlap geometry, and ground control point (GCP) alignment.</p>
+                </div>
+
+                <!-- Overlap Info Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="glass-card p-4 rounded-xl border-t-2 border-cyan-500">
+                        <div class="text-xs font-bold text-cyan-400 uppercase">Front Overlap</div>
+                        <div class="text-2xl font-bold text-white mt-1">75% - 80%</div>
+                        <p class="text-xs text-slate-400 mt-1">Ensures tie points between sequential flight images along the line.</p>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl border-t-2 border-cyan-500">
+                        <div class="text-xs font-bold text-cyan-400 uppercase">Side Overlap</div>
+                        <div class="text-2xl font-bold text-white mt-1">70% - 75%</div>
+                        <p class="text-xs text-slate-400 mt-1">Stitches parallel flight lines together across terrain features.</p>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl border-t-2 border-cyan-500">
+                        <div class="text-xs font-bold text-cyan-400 uppercase">Camera Angle</div>
+                        <div class="text-2xl font-bold text-white mt-1">Nadir vs Oblique</div>
+                        <p class="text-xs text-slate-400 mt-1">90° Nadir for 2D orthomosaics; 60-70° Oblique cross-hatch for 3D meshes.</p>
+                    </div>
+                </div>
+
+                <!-- Interactive GSD Calculator -->
+                <div class="glass-card p-6 rounded-2xl space-y-6">
+                    <h3 class="text-lg font-bold text-white">Ground Sample Distance (GSD) & Flight Coverage Calculator</h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Flight Altitude (ft AGL)</label>
+                            <input type="number" id="map-alt-ft" value="200" oninput="calculateGSD()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Sensor Width (mm)</label>
+                            <input type="number" id="map-sensor-w" value="13.2" step="0.1" oninput="calculateGSD()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+                            <span class="text-[10px] text-slate-500">1" Sensor = 13.2mm</span>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Focal Length (mm)</label>
+                            <input type="number" id="map-focal-len" value="8.8" step="0.1" oninput="calculateGSD()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Image Width (Pixels)</label>
+                            <input type="number" id="map-img-px" value="5472" oninput="calculateGSD()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
+                            <span class="text-[10px] text-slate-500">20 MP = 5472 px</span>
+                        </div>
+                    </div>
+
+                    <!-- Output Box -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400">Ground Sample Distance (GSD)</div>
+                            <div id="gsd-output-val" class="text-3xl font-extrabold text-cyan-400 mt-1">1.70 cm/px</div>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400">Single Image Footprint Width</div>
+                            <div id="gsd-output-footprint" class="text-3xl font-extrabold text-cyan-400 mt-1">93.0 Meters</div>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400">Recommended Max Speed</div>
+                            <div id="gsd-output-speed" class="text-3xl font-extrabold text-emerald-400 mt-1">11.5 mph</div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ================= TAB 7: SECTOR - THERMAL IMAGING ================= -->
+            <section id="tab-sector-thermal" class="tab-content hidden space-y-6">
+                
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+                        <svg class="w-7 h-7 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
+                        Advanced Sector Track: Thermal Imaging & Emissivity Simulator
+                    </h2>
+                    <p class="text-slate-400 text-sm">Long-Wave Infrared (LWIR) radiometric principles, reflected apparent temperature, and emissivity errors.</p>
+                </div>
+
+                <!-- Emissivity Interactive Simulator -->
+                <div class="glass-card p-6 rounded-2xl space-y-6">
+                    <h3 class="text-lg font-bold text-white">Radiometric Emissivity ($\epsilon$) Error Calculator</h3>
+                    <p class="text-xs text-slate-400">Select a material to see how low emissivity creates massive false temperature readings by reflecting sky temperature.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Select Target Surface Material</label>
+                            <select id="thermal-mat-select" onchange="calculateThermalError()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-rose-500 focus:outline-none">
+                                <option value="0.95" selected>Concrete / Asphalt (ε = 0.95)</option>
+                                <option value="0.96">Water / Vegetation (ε = 0.96)</option>
+                                <option value="0.98">Human Skin / Rubber (ε = 0.98)</option>
+                                <option value="0.75">Oxidized Metal (ε = 0.75)</option>
+                                <option value="0.20">Polished Aluminum (ε = 0.20)</option>
+                                <option value="0.05">Bare Shiny Metal / Copper (ε = 0.05)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">True Object Surface Temp (°F)</label>
+                            <input type="number" id="thermal-true-temp" value="120" oninput="calculateThermalError()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-rose-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Reflected Ambient Sky Temp (°F)</label>
+                            <input type="number" id="thermal-refl-temp" value="40" oninput="calculateThermalError()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-rose-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Output Results -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400">Emissivity Value ($\epsilon$)</div>
+                            <div id="thermal-out-e" class="text-2xl font-bold text-rose-400 mt-1">0.95</div>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400">Raw Uncorrected Camera Reading</div>
+                            <div id="thermal-out-reading" class="text-2xl font-bold text-amber-400 mt-1">116.0 °F</div>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400">Measurement Error Delta</div>
+                            <div id="thermal-out-error" class="text-2xl font-bold text-emerald-400 mt-1">-4.0 °F</div>
+                        </div>
+                    </div>
+
+                    <div id="thermal-warning-box" class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs hidden">
+                        ⚠️ <b>CRITICAL WARNING:</b> Low emissivity ($\epsilon < 0.50$) causes the camera to read sky reflections rather than surface heat! Cover reflective metals with non-shiny vinyl tape ($\epsilon = 0.95$) before measuring.
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ================= TAB 8: EXAM SIMULATOR ================= -->
+            <section id="tab-exam-sim" class="tab-content hidden space-y-6">
+                
+                <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white tracking-tight">FAA Part 107 & Commercial Exam Simulator</h2>
+                        <p class="text-slate-400 text-sm">Test your knowledge across 15 questions covering all ground school and advanced tracks.</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span id="quiz-question-counter" class="text-xs font-bold text-slate-400">Question 1 / 15</span>
+                        <button onclick="resetExam()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Reset Exam</button>
+                    </div>
+                </div>
+
+                <!-- Quiz Card Frame -->
+                <div id="quiz-container" class="glass-card p-6 rounded-2xl space-y-6">
+                    
+                    <div class="flex items-center justify-between">
+                        <span id="quiz-domain-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-flight-600/20 text-flight-400 border border-flight-500/30">REGULATIONS</span>
+                        <span id="quiz-score-live" class="text-xs text-slate-400">Current Score: 0 / 0</span>
+                    </div>
+
+                    <!-- Question Text -->
+                    <h3 id="quiz-question-text" class="text-lg font-bold text-white leading-relaxed">
+                        Loading test question...
+                    </h3>
+
+                    <!-- Answer Options -->
+                    <div id="quiz-options-container" class="space-y-3">
+                        <!-- Options injected dynamically by JS -->
+                    </div>
+
+                    <!-- Explanation Box -->
+                    <div id="quiz-explanation-box" class="p-4 rounded-xl bg-slate-900 border border-slate-800 hidden space-y-2">
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">FAA Regulation Citation & Explanation</div>
+                        <p id="quiz-explanation-text" class="text-xs text-slate-300 leading-relaxed"></p>
+                    </div>
+
+                    <!-- Next Button -->
+                    <div class="flex justify-end pt-2">
+                        <button id="quiz-next-btn" onclick="nextQuestion()" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-flight-600 hover:bg-flight-500 text-white transition shadow-lg shadow-flight-600/30 hidden">
+                            Next Question &rarr;
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Final Score Screen (Hidden by default) -->
+                <div id="quiz-results-screen" class="glass-card p-8 rounded-2xl text-center space-y-6 hidden">
+                    <h3 class="text-2xl font-bold text-white">FAA Exam Practice Complete!</h3>
+                    
+                    <div class="inline-flex flex-col items-center justify-center p-6 bg-slate-900 rounded-2xl border border-slate-800">
+                        <div id="final-percent-display" class="text-5xl font-extrabold text-emerald-400">86%</div>
+                        <div id="final-fraction-display" class="text-sm text-slate-400 mt-1">13 out of 15 Correct</div>
+                    </div>
+
+                    <div id="final-pass-badge" class="px-4 py-2 rounded-xl text-sm font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 max-w-xs mx-auto">
+                        OFFICIAL STATUS: PASSED (70% REQUIRED)
+                    </div>
+
+                    <p class="text-sm text-slate-400 max-w-md mx-auto">
+                        Great job! You have demonstrated readiness across core Part 107 rules and advanced commercial sector tracks.
+                    </p>
+
+                    <button onclick="resetExam()" class="px-6 py-3 rounded-xl font-bold bg-flight-600 hover:bg-flight-500 text-white transition">
+                        Retake Exam
+                    </button>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Application Logic Script -->
+    <script>
+        
+        // --- 1. GLOBAL STATE & TAB NAVIGATION ---
+        let completedTabs = new Set(['dashboard']);
+
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('block'));
+
+            // Show target
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('block');
+            }
+
+            // Update Nav buttons styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-800/80', 'text-white', 'border-l-4', 'border-flight-500');
+            });
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-slate-800/80', 'text-white', 'border-l-4', 'border-flight-500');
+            }
+
+            completedTabs.add(tabId);
+            updateGlobalProgress();
+        }
+
+        function updateGlobalProgress() {
+            const totalTabs = 8;
+            const progressPct = Math.round((completedTabs.size / totalTabs) * 100);
+            
+            document.getElementById('global-progress-bar').style.width = `${progressPct}%`;
+            document.getElementById('global-progress-text').innerText = `${progressPct}% Explored`;
+        }
+
+
+        // --- 2. EXAM PREDICTOR LOGIC ---
+        function updateExamPredictor() {
+            const reg = parseInt(document.getElementById('slider-reg').value);
+            const air = parseInt(document.getElementById('slider-air').value);
+            const wx = parseInt(document.getElementById('slider-wx').value);
+            const perf = parseInt(document.getElementById('slider-perf').value);
+            const ops = parseInt(document.getElementById('slider-ops').value);
+
+            document.getElementById('slider-reg-val').innerText = reg + '%';
+            document.getElementById('slider-air-val').innerText = air + '%';
+            document.getElementById('slider-wx-val').innerText = wx + '%';
+            document.getElementById('slider-perf-val').innerText = perf + '%';
+            document.getElementById('slider-ops-val').innerText = ops + '%';
+
+            // Weighted calculation matching FAA 60-question breakdown
+            const totalWeighted = (reg * 0.20) + (air * 0.20) + (wx * 0.13) + (perf * 0.09) + (ops * 0.38);
+            const scorePct = Math.round(totalWeighted);
+            const questionsCorrect = Math.round((scorePct / 100) * 60);
+
+            document.getElementById('gauge-score-text').innerText = scorePct + '%';
+            document.getElementById('gauge-questions-text').innerText = `${questionsCorrect} / 60 Correct`;
+
+            // SVG Stroke Dashoffset calculation (251.2 circumference)
+            const strokeOffset = 251.2 - (251.2 * scorePct / 100);
+            const circle = document.getElementById('gauge-circle');
+            circle.style.strokeDashoffset = strokeOffset;
+
+            const statusBadge = document.getElementById('gauge-status-badge');
+            if (scorePct >= 70) {
+                circle.style.stroke = '#10b981';
+                statusBadge.className = "px-4 py-2 rounded-xl text-sm font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                statusBadge.innerText = "PASSED - READY FOR FAA EXAM";
+            } else {
+                circle.style.stroke = '#ef4444';
+                statusBadge.className = "px-4 py-2 rounded-xl text-sm font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+                statusBadge.innerText = "NEEDS REVIEW (BELOW 70% PASS MARK)";
+            }
+        }
+
+        function setPredictorPreset(preset) {
+            if (preset === 'ready') {
+                document.getElementById('slider-reg').value = 90;
+                document.getElementById('slider-air').value = 85;
+                document.getElementById('slider-wx').value = 80;
+                document.getElementById('slider-perf').value = 90;
+                document.getElementById('slider-ops').value = 88;
+            } else if (preset === 'airspace') {
+                document.getElementById('slider-reg').value = 85;
+                document.getElementById('slider-air').value = 45;
+                document.getElementById('slider-wx').value = 75;
+                document.getElementById('slider-perf').value = 80;
+                document.getElementById('slider-ops').value = 70;
+            } else {
+                document.getElementById('slider-reg').value = 75;
+                document.getElementById('slider-air').value = 70;
+                document.getElementById('slider-wx').value = 65;
+                document.getElementById('slider-perf').value = 80;
+                document.getElementById('slider-ops').value = 75;
+            }
+            updateExamPredictor();
+        }
+
+        // --- 3. WEB AUDIO API SYNTHESIZER ---
+        let audioCtx = null;
+        let isPlaying = false;
+        let bpm = 120;
+        let currentStep = 0;
+        let timerId = null;
+        let activeTrackPattern = 'track1';
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playKick(time) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(130, time);
+            osc.frequency.exponentialRampToValueAtTime(30, time + 0.12);
+            gain.gain.setValueAtTime(1, time);
+            gain.gain.exponentialRampToValueAtTime(0.001, time + 0.12);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(time);
+            osc.stop(time + 0.12);
+        }
+
+        function playSnare(time) {
+            // Noise buffer
+            const bufferSize = audioCtx.sampleRate * 0.1;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'highpass';
+            filter.frequency.value = 1000;
+
+            const noiseGain = audioCtx.createGain();
+            noiseGain.gain.setValueAtTime(0.8, time);
+            noiseGain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+
+            noise.connect(filter);
+            filter.connect(noiseGain);
+            noiseGain.connect(audioCtx.destination);
+
+            // Pop tone
+            const osc = audioCtx.createOscillator();
+            const oscGain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(180, time);
+            oscGain.gain.setValueAtTime(0.5, time);
+            oscGain.gain.exponentialRampToValueAtTime(0.01, time + 0.08);
+
+            osc.connect(oscGain);
+            oscGain.connect(audioCtx.destination);
+
+            noise.start(time);
+            osc.start(time);
+            noise.stop(time + 0.1);
+            osc.stop(time + 0.08);
+        }
+
+        function playHiHat(time) {
+            const bufferSize = audioCtx.sampleRate * 0.04;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'highpass';
+            filter.frequency.value = 7000;
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.3, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.04);
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            noise.start(time);
+            noise.stop(time + 0.04);
+        }
+
+        function stepScheduler() {
+            if (!isPlaying) return;
+
+            const now = audioCtx.currentTime;
+
+            // Highlight step visually
+            for (let i = 0; i < 8; i++) {
+                const el = document.getElementById(`step-${i}`);
+                if (i === currentStep) {
+                    el.className = "w-3 h-8 rounded-full transition beat-active";
+                } else {
+                    el.className = "w-3 h-8 bg-slate-800 rounded-full transition";
+                }
+            }
+
+            // Patterns
+            if (activeTrackPattern === 'track1') { // 4-on-floor Disco
+                if (currentStep % 2 === 0) playKick(now);
+                if (currentStep === 2 || currentStep === 6) playSnare(now);
+                playHiHat(now);
+            } else if (activeTrackPattern === 'track2') { // Boom Bap
+                if (currentStep === 0 || currentStep === 5) playKick(now);
+                if (currentStep === 2 || currentStep === 6) playSnare(now);
+                if (currentStep % 2 !== 0) playHiHat(now);
+            } else if (activeTrackPattern === 'track3') { // Stomp Stomp Clap
+                if (currentStep === 0 || currentStep === 1 || currentStep === 4 || currentStep === 5) playKick(now);
+                if (currentStep === 2 || currentStep === 6) playSnare(now);
+            }
+
+            currentStep = (currentStep + 1) % 8;
+            const stepInterval = (60 / bpm) / 2 * 1000; // 8th notes
+            timerId = setTimeout(stepScheduler, stepInterval);
+        }
+
+        function toggleSynthBeat() {
+            initAudioContext();
+            isPlaying = !isPlaying;
+
+            const playIcon = document.getElementById('synth-play-icon');
+            const pauseIcon = document.getElementById('synth-pause-icon');
+
+            if (isPlaying) {
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+                currentStep = 0;
+                stepScheduler();
+            } else {
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                clearTimeout(timerId);
+            }
+        }
+
+        function updateBPM(val) {
+            bpm = parseInt(val);
+            document.getElementById('bpm-display').innerText = `${bpm} BPM`;
+        }
+
+        function selectSongTrack(track) {
+            activeTrackPattern = track;
+            const nameElem = document.getElementById('synth-pattern-name');
+            const bpmSlider = document.getElementById('synth-bpm');
+
+            if (track === 'track1') {
+                nameElem.innerText = 'Track 1 Pattern: Disco Bounce (120 BPM)';
+                bpmSlider.value = 120;
+                updateBPM(120);
+            } else if (track === 'track2') {
+                nameElem.innerText = 'Track 2 Pattern: Boom-Bap Hip Hop (90 BPM)';
+                bpmSlider.value = 90;
+                updateBPM(90);
+            } else if (track === 'track3') {
+                nameElem.innerText = 'Track 3 Pattern: Stomp-Stomp-Clap (85 BPM)';
+                bpmSlider.value = 85;
+                updateBPM(85);
+            }
+
+            if (!isPlaying) {
+                toggleSynthBeat();
+            }
+        }
+
+        // --- 4. DOMAIN CALCULATORS ---
+        function calculateAgMission() {
+            const acres = parseFloat(document.getElementById('ag-field-acres').value) || 0;
+            const gpa = parseFloat(document.getElementById('ag-rate-gpa').value) || 0;
+            const tank = parseFloat(document.getElementById('ag-tank-cap').value) || 1;
+            const speed = parseFloat(document.getElementById('ag-speed-mph').value) || 0;
+            const swath = parseFloat(document.getElementById('ag-swath-ft').value) || 0;
+
+            const totalGal = acres * gpa;
+            const flights = Math.ceil(totalGal / tank);
+            
+            // Spray rate formula: (Speed mph * Swath ft) / 8.25 = Acres per hour
+            const acresPerHour = (speed * swath) / 8.25;
+
+            document.getElementById('ag-out-total-gal').innerText = `${totalGal.toFixed(1)} Gallons`;
+            document.getElementById('ag-out-flights').innerText = `${flights} Tank Loads`;
+            document.getElementById('ag-out-coverage-rate').innerText = `${acresPerHour.toFixed(1)} Acres/hr`;
+        }
+
+        function calculateGSD() {
+            const altFt = parseFloat(document.getElementById('map-alt-ft').value) || 0;
+            const sensorW = parseFloat(document.getElementById('map-sensor-w').value) || 1;
+            const focalLen = parseFloat(document.getElementById('map-focal-len').value) || 1;
+            const imgPx = parseFloat(document.getElementById('map-img-px').value) || 1;
+
+            // GSD formula (cm/px) = (Sensor Width mm * Altitude ft * 30.48 * 10) / (Focal Length mm * Image Width px)
+            const gsdCm = (sensorW * altFt * 30.48 * 10) / (focalLen * imgPx);
+            
+            // Single frame footprint width (Meters) = (GSD cm/px * Image Width px) / 100
+            const footprintM = (gsdCm * imgPx) / 100;
+            
+            // Max Speed recommendation to avoid motion blur at 1/500s shutter
+            const maxSpeedMph = (gsdCm * 6.8);
+
+            document.getElementById('gsd-output-val').innerText = `${gsdCm.toFixed(2)} cm/px`;
+            document.getElementById('gsd-output-footprint').innerText = `${footprintM.toFixed(1)} Meters`;
+            document.getElementById('gsd-output-speed').innerText = `${maxSpeedMph.toFixed(1)} mph`;
+        }
+
+        function calculateThermalError() {
+            const e = parseFloat(document.getElementById('thermal-mat-select').value);
+            const trueT = parseFloat(document.getElementById('thermal-true-temp').value) || 0;
+            const reflT = parseFloat(document.getElementById('thermal-refl-temp').value) || 0;
+
+            // Apparent Radiometric Reading = (Emissivity * True Temp) + ((1 - Emissivity) * Reflected Temp)
+            const apparentT = (e * trueT) + ((1 - e) * reflT);
+            const delta = apparentT - trueT;
+
+            document.getElementById('thermal-out-e').innerText = e.toFixed(2);
+            document.getElementById('thermal-out-reading').innerText = `${apparentT.toFixed(1)} °F`;
+            
+            const errorElem = document.getElementById('thermal-out-error');
+            errorElem.innerText = `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} °F`;
+
+            const warningBox = document.getElementById('thermal-warning-box');
+            if (e < 0.50) {
+                warningBox.classList.remove('hidden');
+                errorElem.className = "text-2xl font-bold text-rose-500 mt-1";
+            } else {
+                warningBox.classList.add('hidden');
+                errorElem.className = "text-2xl font-bold text-emerald-400 mt-1";
+            }
+        }
+
+
+        // --- 5. 15-QUESTION FAA PRACTICE EXAM DATA & ENGINE ---
+        const examQuestions = [
+            {
+                domain: "REGULATIONS",
+                question: "According to 14 CFR Part 107, what is the maximum authorized groundspeed for a small unmanned aircraft?",
+                options: ["87 knots (100 mph)", "100 knots (115 mph)", "50 knots (58 mph)"],
+                correct: 0,
+                explanation: "14 CFR § 107.51 limits the maximum groundspeed of a small unmanned aircraft to 87 knots (100 mph)."
+            },
+            {
+                domain: "REGULATIONS",
+                question: "What is the minimum buffer distance a remote pilot must maintain below clouds during flight?",
+                options: ["2,000 feet", "500 feet", "1,000 feet"],
+                correct: 1,
+                explanation: "14 CFR § 107.51 requires operating at least 500 feet below clouds and 2,000 feet horizontally from clouds."
+            },
+            {
+                domain: "AIRSPACE",
+                question: "What class of airspace is represented on a Sectional Chart by a dashed blue line?",
+                options: ["Class B", "Class C", "Class D"],
+                correct: 2,
+                explanation: "Class D airspace is indicated by a dashed blue line surrounding a towered airport."
+            },
+            {
+                domain: "WEATHER",
+                question: "High density altitude results in which of the following performance impacts on a drone?",
+                options: ["Increased motor efficiency", "Reduced air density causing reduced rotor lift", "Higher maximum payload weight capacity"],
+                correct: 1,
+                explanation: "High density altitude (thin air caused by high temperature or elevation) reduces air density, decreasing rotor lift and battery efficiency."
+            },
+            {
+                domain: "OPERATIONS & CRM",
+                question: "A remote pilot who displays the hazardous attitude of 'Anti-Authority' ('Don't tell me') should apply which antidote?",
+                options: ["Follow the rules. They are usually right.", "Not so fast. Think first.", "It could happen to me."],
+                correct: 0,
+                explanation: "The official FAA antidote for the 'Anti-Authority' hazardous attitude is: 'Follow the rules. They are usually right.'"
+            },
+            {
+                domain: "REGULATIONS",
+                question: "Within how many days must an in-flight accident be reported to the FAA if property damage exceeds $500?",
+                options: ["30 days", "10 days", "48 hours"],
+                correct: 1,
+                explanation: "14 CFR § 107.9 requires reporting any accident resulting in serious injury, loss of consciousness, or property damage exceeding $500 within 10 calendar days."
+            },
+            {
+                domain: "NIGHT OPS",
+                question: "Under 14 CFR § 107.29, anti-collision lights used for night operations must be visible for at least:",
+                options: ["3 statute miles", "5 statute miles", "1 nautical mile"],
+                correct: 0,
+                explanation: "14 CFR § 107.29 mandates anti-collision lighting visible for at least 3 statute miles with a flash rate of 40-100 FPM."
+            },
+            {
+                domain: "AG & PART 137",
+                question: "What certificate is required in addition to Part 107 to dispense economic poisons or pesticides over crops?",
+                options: ["Part 61 Commercial License", "Part 137 Agricultural Aircraft Operator Certificate", "Section 44807 Waiver Only"],
+                correct: 1,
+                explanation: "Dispensing any chemical or agricultural poison requires a Part 137 Agricultural Aircraft Operator Certificate."
+            },
+            {
+                domain: "PHOTOGRAMMETRY",
+                question: "When planning a flight mission for 2D orthomosaic generation, what is the recommended front overlap percentage?",
+                options: ["30% - 40%", "50% - 60%", "75% - 80%"],
+                correct: 2,
+                explanation: "High-accuracy photogrammetric reconstruction requires 75% to 80% front overlap along flight paths."
+            },
+            {
+                domain: "THERMAL IMAGING",
+                question: "Why do shiny bare metals pose a challenge for thermal infrared cameras?",
+                options: ["They have very high emissivity", "They have very low emissivity (reflection of sky temperature)", "They absorb all LWIR radiation"],
+                correct: 1,
+                explanation: "Bare shiny metals have extremely low emissivity (near 0.05) and reflect surrounding ambient sky radiation rather than emitting true heat."
+            },
+            {
+                domain: "REGULATIONS",
+                question: "What is the maximum blood alcohol concentration (BAC) limit allowed for a remote pilot in command?",
+                options: ["0.08%", "0.04%", "0.02%"],
+                correct: 1,
+                explanation: "14 CFR § 107.27 specifies a strict maximum BAC limit of 0.04% and an 8-hour bottle-to-throttle requirement."
+            },
+            {
+                domain: "AIRSPACE",
+                question: "What frequency should a remote pilot monitor to receive traffic advisories at a non-towered airport?",
+                options: ["CTAF (Common Traffic Advisory Frequency)", "ATIS", "Ground Control"],
+                correct: 0,
+                explanation: "The CTAF (typically 122.8 MHz or designated frequency) is used to broadcast position and listen for traffic at non-towered fields."
+            },
+            {
+                domain: "WEATHER",
+                question: "What weather phenomenon is characterized by a rapid, short-term change in wind speed and direction?",
+                options: ["Thermal inversion", "Wind shear", "Micro-density shift"],
+                correct: 1,
+                explanation: "Wind shear is a drastic change in wind speed and/or direction over a short distance or time period."
+            },
+            {
+                domain: "NIGHT OPS",
+                question: "The optical illusion where a stationary light in a dark environment appears to move is known as:",
+                options: ["Autokinesis", "Flicker vertigo", "Reversible perspective"],
+                correct: 0,
+                explanation: "Autokinesis occurs when staring at a single light source in the dark, causing the eye muscles to move and creating perceived motion."
+            },
+            {
+                domain: "AG & HEAVY DRONES",
+                question: "Operating a spraying drone weighing 75 lbs at takeoff requires which FAA regulatory relief?",
+                options: ["Standard Part 107 only", "FAA Section 44807 Exemption + Part 137", "Part 107 Night Waiver"],
+                correct: 1,
+                explanation: "Drones weighing 55 lbs or more exceed Part 107 weight limits and require an FAA § 44807 Exemption alongside Part 137 authorization."
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let answeredQuestions = new Set();
+
+        function renderQuestion() {
+            const q = examQuestions[currentQuizIndex];
+            
+            document.getElementById('quiz-question-counter').innerText = `Question ${currentQuizIndex + 1} / ${examQuestions.length}`;
+            document.getElementById('quiz-domain-badge').innerText = q.domain;
+            document.getElementById('quiz-question-text').innerText = q.question;
+            document.getElementById('quiz-score-live').innerText = `Current Score: ${quizScore} / ${answeredQuestions.size}`;
+
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-slate-800 text-sm font-medium text-slate-200 transition flex items-center justify-between";
+                btn.onclick = () => checkAnswer(idx);
+                btn.innerHTML = `<span><b>${String.fromCharCode(65 + idx)}.</b> ${opt}</span>`;
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('quiz-explanation-box').classList.add('hidden');
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(selectedIdx) {
+            if (answeredQuestions.has(currentQuizIndex)) return;
+            answeredQuestions.add(currentQuizIndex);
+
+            const q = examQuestions[currentQuizIndex];
+            const options = document.getElementById('quiz-options-container').children;
+
+            if (selectedIdx === q.correct) {
+                quizScore++;
+                options[selectedIdx].className = "w-full text-left p-4 rounded-xl border border-emerald-500/50 bg-emerald-500/20 text-sm font-bold text-emerald-300 flex items-center justify-between";
+            } else {
+                options[selectedIdx].className = "w-full text-left p-4 rounded-xl border border-rose-500/50 bg-rose-500/20 text-sm font-bold text-rose-300 flex items-center justify-between";
+                options[q.correct].className = "w-full text-left p-4 rounded-xl border border-emerald-500/50 bg-emerald-500/20 text-sm font-bold text-emerald-300 flex items-center justify-between";
+            }
+
+            // Disable all options
+            for (let btn of options) {
+                btn.onclick = null;
+            }
+
+            document.getElementById('quiz-score-live').innerText = `Current Score: ${quizScore} / ${answeredQuestions.size}`;
+            document.getElementById('quiz-explanation-text').innerText = q.explanation;
+            document.getElementById('quiz-explanation-box').classList.remove('hidden');
+            document.getElementById('quiz-next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < examQuestions.length) {
+                renderQuestion();
+            } else {
+                showQuizResults();
+            }
+        }
+
+        function showQuizResults() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('quiz-results-screen').classList.remove('hidden');
+
+            const pct = Math.round((quizScore / examQuestions.length) * 100);
+            document.getElementById('final-percent-display').innerText = `${pct}%`;
+            document.getElementById('final-fraction-display').innerText = `${quizScore} out of ${examQuestions.length} Correct`;
+
+            const badge = document.getElementById('final-pass-badge');
+            if (pct >= 70) {
+                badge.className = "px-4 py-2 rounded-xl text-sm font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 max-w-xs mx-auto";
+                badge.innerText = "OFFICIAL STATUS: PASSED (70% REQUIRED)";
+            } else {
+                badge.className = "px-4 py-2 rounded-xl text-sm font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 max-w-xs mx-auto";
+                badge.innerText = "OFFICIAL STATUS: NEEDS REVIEW (BELOW 70%)";
+            }
+        }
+
+        function resetExam() {
+            currentQuizIndex = 0;
+            quizScore = 0;
+            answeredQuestions.clear();
+            document.getElementById('quiz-results-screen').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            renderQuestion();
+        }
+
+
+        // --- INITIALIZATION ON WINDOW LOAD ---
+        window.onload = function() {
+            updateExamPredictor();
+            calculateAgMission();
+            calculateGSD();
+            calculateThermalError();
+            renderQuestion();
+            switchTab('dashboard');
+        };
+    </script>
+</body>
+</html>

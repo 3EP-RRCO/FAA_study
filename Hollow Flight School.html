@@ -15,7 +15,24 @@
   --lump:26px 18px 28px 20px / 20px 28px 18px 26px;
   color-scheme:dark;
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box}.faa-navigation {
+    background-color: #17324d;
+    padding: 12px 20px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.faa-navigation a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.faa-navigation a:hover {
+    color: #f2bd50;
+    text-decoration: underline;
+}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--cave);color:var(--ink);font:16px/1.55 var(--f-body);
   padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:0 120px;
